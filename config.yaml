@@ -1,0 +1,18 @@
+devices:
+  rm_main:
+    ip: '10.0.0.34'
+    mac:
+    remotes:
+      shades:
+        description: 'shades for master bedroom'
+        oplist:
+         up: 'b21332001c0c1c0c1c0b1c0c1c0c1c1d0b0c1c0c1c0c1c0c1c1d0b0c1c0c1c0c1c1d0b0c1c1d0b1d0b1d0b0c1c0c1c1d0b1d0b1d0bca000000000000'
+         down: 'b21e32001d0c1c0b1d0c1c0b1c0c1d1c0c0b1d0b1d0b1d0b1d1c0c0b1d0b1d0b1d1c0c0b1c1c0c1c0c1c0c0b1c1c0c0c1d1d0b1c0bc9000000000000'
+         stop: 'b20732001c0b1d0b1d0b1d0b1d0b1d1c0c0b1d0b1d0b1d0b1d1c0c0b1d0b1d0b1d1d0c0b1d1c0c1c0c1c0c0b1d1c0c1c0c1c0c1c0cc9000000000000'
+
+
+
+loglevel: 'debug'
+urls:
+  - '/ops/(.*)'
+  - 'perform_op'
