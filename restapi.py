@@ -32,7 +32,6 @@ class perform_op:
     def GET(self,url):
         if web.data():
             data = json.loads(web.data())
-            device = data['device']
             remote = data['remote']
             operation = data['operation']
             Broadlinkconnector.getInstance().execute(device,remote,operation)

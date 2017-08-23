@@ -9,16 +9,21 @@ import broadlink
 
 
 class Broadlinkconnector:
+
     __instance = None
+    logger = None
+    remotes = {}
+    devices = {}
 
     def __init__(self):
         if Broadlinkconnector.__instance is not None:
             return
-        devices = {}
-        remotes = {}
-        gotActictiveConnections = False
-        Broadlinkconnector.__instance = self
+        self.devices = {}
+        self.remotes = {}
+        self.gotActictiveConnections = False
+        self.logger = logging.getLogger(__name__)
         self.init('config.yaml')
+        Broadlinkconnector.__instance = self
 
 
     @staticmethod
@@ -32,47 +37,39 @@ class Broadlinkconnector:
 
     def init(self,configFileName):
 
-        logger = logging.getLogger(__name__)
-
         with open(configFileName, 'r') as stream:
             config = yaml.load(stream)
-        devices={}
-        gotActictiveConnections=False
+        self.devices = config['devices']
         self.remotes = config['remotes']
 
-        for dev in config['devices'].keys():
-            name = dev
-            devices[name] = {}
-            devices[name]['isConnected'] = False
-            ip = config['devices'][dev].get('ip',None)
+        for devName in config['devices'].keys():
+            self.devices[devName]['isConnected'] = False
+            ip = self.devices[devName].get('ip',None)
             mac = bytearray.fromhex("b4430fffffff")#dev.get('mac',None)
-            devices[name]['link'] = broadlink.rm(host=(ip, 80), mac=mac)
-            logger.info("Connecting to Broadlink: device {} on ip {}".format(name,ip))
+            self.devices[devName]['link'] = broadlink.rm(host=(ip, 80), mac=mac)
+            self.logger.info("Connecting to Broadlink device: {} on ip: {}".format(devName,ip))
             try:
-                devices[name]['link'].auth()
+                self.devices[devName]['link'].auth()
             except socket.timeout:
-                logger.error("Connection timeout")
+                self.logger.error("Connection timeout: " + devName)
                 continue
             except:
-                logger.fatal(sys.exc_info()[0])
+                self.logger.fatal(sys.exc_info()[0])
 
-
-            devices[name]['isConnected'] = True
+            self.devices[devName]['isConnected'] = True
             gotActictiveConnections = True
             time.sleep(1)
-            logger.info("Connected to "+name)
+            self.logger.info("Connected to device: "+devName)
 
-        self.devices = devices
         self.gotActictiveConnections = gotActictiveConnections
         self.urls = config.get('urls',None)
 
 
     def execute(self, remote, operation):
-        logger=logging.getLogger(__name__)
 
         rem = self.remotes.get(remote,None)
         if rem is None:
-            logger.error("remote {} does not exist".format(remote))
+            self.logger.error("remote {} does not exist".format(remote))
             return
 
         devName=rem.get('device',None)
@@ -80,15 +77,15 @@ class Broadlinkconnector:
         op_hex = rem['oplist'].get(operation,None)
 
         if op_hex is None:
-            logger.error("operation {} does not exist in remote {} in device {}".format(operation, remote, devName))
+            self.logger.error("operation {} does not exist in remote {} in device {}".format(operation, remote, devName))
             return
 
         if not device['isConnected']:
-            logger.error("Cant execute command, device {} is not connected".format(devName))
+            self.logger.error("Cant execute command, device {} is not connected".format(devName))
             return
 
         device['link'].send_data(op_hex.decode('hex'))
-        logger.info("Command {} executes successfully".format(operation))
+        self.logger.info("Command: {} executed successfully on remote: {} device: {}".format(operation,remote, devName))
 
     def gotactictiveconnections(self):
         return self.gotActictiveConnections
