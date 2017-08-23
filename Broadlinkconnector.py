@@ -5,8 +5,7 @@ import socket
 import time
 import sys
 import yaml
-
-import zauto.broadlink
+import broadlink
 
 
 class Broadlinkconnector:
@@ -45,7 +44,7 @@ class Broadlinkconnector:
             devices[name]['isConnected'] = False
             ip = config['devices'][dev].get('ip',None)
             mac = bytearray.fromhex("b4430fffffff")#dev.get('mac',None)
-            devices[name]['connection'] = zauto.broadlink.rm(host=(ip, 80), mac=mac)
+            devices[name]['connection'] = broadlink.rm(host=(ip, 80), mac=mac)
             logger.info("Connecting to Broadlink: device {} on ip {}".format(name,ip))
             devices[name]['remotes']=config['devices'][name]['remotes']
             try:

@@ -1,8 +1,8 @@
 import json
 import logging
 
-import zauto.web
-from zauto.Broadlinkconnector import Broadlinkconnector
+import web
+from Broadlinkconnector import Broadlinkconnector
 
 FORMAT = '%(asctime)-15s: %(name)-8s: %(levelname)s: %(message)s'
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
@@ -19,7 +19,7 @@ Broadlinkconnector.getInstance()
 
 url=('(.*)', 'perform_op')
 
-app = zauto.web.application(url, globals())
+app = web.application(url, globals())
 
 if __name__ == "__main__":
     app.run()
@@ -30,10 +30,10 @@ logger.info('Ready')
 class perform_op:
 
     def GET(self,url):
-        if zauto.web.data():
-            data = json.loads(zauto.web.data())
+        if web.data():
+            data = json.loads(web.data())
             device = data['device']
             remote = data['remote']
             operation = data['operation']
-#            Broadlinkconnector.getInstance().execute(device,remote,operation)
+            Broadlinkconnector.getInstance().execute(device,remote,operation)
         return 'OK'
