@@ -27,9 +27,16 @@ scenarios:
   maser_bedroom_shades_up:
     description: 'bring bedroom shades half way up'
     actions:
-      - 'execute, shades, up'
-      - 'delay, 5'
-      - 'execute, shades, stop'
+      - 'execute,shades,up'
+      - 'delay, 7'
+      - 'execute,shades,stop'
+
+  maser_bedroom_shades_down:
+    description: 'bring bedroom shades half way down'
+    actions:
+      - 'execute,shades,down'
+      - 'delay, 7'
+      - 'execute,shades,stop'
 
 loglevel: 'debug'
 
