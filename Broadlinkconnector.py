@@ -3,7 +3,7 @@
 import logging
 import socket
 import time
-
+import sys
 import yaml
 
 import zauto.broadlink
@@ -53,6 +53,9 @@ class Broadlinkconnector:
             except socket.timeout:
                 logger.error("Connection timeout")
                 continue
+            except:
+                logger.fatal(sys.exc_info()[0])
+
 
             devices[name]['isConnected'] = True
             gotActictiveConnections = True

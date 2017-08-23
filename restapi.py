@@ -30,9 +30,10 @@ logger.info('Ready')
 class perform_op:
 
     def GET(self,url):
-        data = json.loads(zauto.web.data())
-        device = data['device']
-        remote = data['remote']
-        operation = data['operation']
-        Broadlinkconnector.getInstance().execute(device,remote,operation)
+        if zauto.web.data():
+            data = json.loads(zauto.web.data())
+            device = data['device']
+            remote = data['remote']
+            operation = data['operation']
+#            Broadlinkconnector.getInstance().execute(device,remote,operation)
         return 'OK'
