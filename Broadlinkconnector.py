@@ -14,6 +14,7 @@ class Broadlinkconnector:
     logger = None
     remotes = {}
     devices = {}
+    scenarios = {}
 
     def __init__(self):
         if Broadlinkconnector.__instance is not None:
@@ -41,6 +42,7 @@ class Broadlinkconnector:
             config = yaml.load(stream)
         self.devices = config['devices']
         self.remotes = config['remotes']
+        self.scenarios = config['scenarios']
 
         for devName in config['devices'].keys():
             self.devices[devName]['isConnected'] = False
@@ -55,7 +57,6 @@ class Broadlinkconnector:
                 continue
             except:
                 self.logger.fatal(sys.exc_info()[0])
-
             self.devices[devName]['isConnected'] = True
             gotActictiveConnections = True
             time.sleep(1)
@@ -77,7 +78,7 @@ class Broadlinkconnector:
         op_hex = rem['oplist'].get(operation,None)
 
         if op_hex is None:
-            self.logger.error("operation {} does not exist in remote {} in device {}".format(operation, remote, devName))
+            self.logger.error("operation {} does not exist for remote {} in device {}".format(operation, remote, devName))
             return
 
         if not device['isConnected']:
@@ -89,3 +90,26 @@ class Broadlinkconnector:
 
     def gotactictiveconnections(self):
         return self.gotActictiveConnections
+
+    def playScenario(self, scenarioName):
+        scenario = self.scenarios.get(scenarioName,None)
+        if scenario is None:
+            self.logger.error("Scenarion {} not defined".format(scenarioName))
+            return
+
+        self.logger.info("going to play scenario {}".format(scenarioName))
+        actionList=scenario.get('actions',None)
+        for action in actionList:
+            command = action.split(',')
+            if command[0].lower() == 'execute'.lower():
+                arg1 = command[1]
+                arg2 = command[2]
+                self.execute(arg1,arg2)
+            elif command[0].lower() == 'delay'.lower():
+                arg1=command[1]
+                self.logger.info("sleeping {} seconds".format(arg1))
+                time.sleep(int(arg1))
+            else:
+                self.logger.error('Action: {} is not supported'.format(command[0]))
+
+        self.logger.info("Scenario: {} completed".format(scenarioName))

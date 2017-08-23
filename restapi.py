@@ -4,6 +4,7 @@ import logging
 import web
 from Broadlinkconnector import Broadlinkconnector
 
+
 FORMAT = '%(asctime)-15s: %(name)-8s: %(levelname)s: %(message)s'
 formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
 logging.basicConfig(level=logging.INFO, format=FORMAT)
@@ -15,17 +16,15 @@ logger.addHandler(handler)
 
 #Broadlinkconnector.getInstance()
 #bc.init('config.yaml')
-Broadlinkconnector.getInstance().execute('ac','off')
+Broadlinkconnector.getInstance().playScenario('maser_bedroom_shades_up')
 
 url=('(.*)', 'perform_op')
 
 app = web.application(url, globals())
 
-if __name__ == "__main__":
-    app.run()
+#if __name__ == "__main__":
+#    app.run()
 
-
-logger.info('Ready')
 
 class perform_op:
 
