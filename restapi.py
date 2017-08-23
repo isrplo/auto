@@ -15,7 +15,7 @@ logger.addHandler(handler)
 
 #Broadlinkconnector.getInstance()
 #bc.init('config.yaml')
-Broadlinkconnector.getInstance().execute('rm_mini','ac','23')
+Broadlinkconnector.getInstance().execute('rm_mini','ac','off')
 
 url=('(.*)', 'perform_op')
 
