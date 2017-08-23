@@ -44,11 +44,11 @@ class Broadlinkconnector:
             devices[name]['isConnected'] = False
             ip = config['devices'][dev].get('ip',None)
             mac = bytearray.fromhex("b4430fffffff")#dev.get('mac',None)
-            devices[name]['connection'] = broadlink.rm(host=(ip, 80), mac=mac)
+            devices[name]['link'] = broadlink.rm(host=(ip, 80), mac=mac)
             logger.info("Connecting to Broadlink: device {} on ip {}".format(name,ip))
             devices[name]['remotes']=config['devices'][name]['remotes']
             try:
-                devices[name]['connection'].auth()
+                devices[name]['link'].auth()
             except socket.timeout:
                 logger.error("Connection timeout")
                 continue
@@ -84,7 +84,7 @@ class Broadlinkconnector:
             logger.error("Cant execute command, device {} is not connected".format(device))
             return
 
-        dev['connection'].send_data(op_hex.decode('hex'))
+        dev['link'].send_data(op_hex.decode('hex'))
         logger.info("Command {} executes successfully".format(operation))
 
     def gotactictiveconnections(self):

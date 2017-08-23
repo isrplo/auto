@@ -13,9 +13,9 @@ handler.setLevel(logging.INFO)
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-Broadlinkconnector.getInstance()
+#Broadlinkconnector.getInstance()
 #bc.init('config.yaml')
-#bc.execute('rm_main','shades','up')
+Broadlinkconnector.getInstance().execute('rm_mini','ac','23')
 
 url=('(.*)', 'perform_op')
 

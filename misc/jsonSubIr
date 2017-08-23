@@ -1,1 +1,1 @@
-[{"id":1,"deviceId":1,"name":"Air Conditioner","type":0,"icon":"device_1.png","order":0},{"id":2,"deviceId":1,"name":"TV","type":3,"icon":"device_2.png","order":0},{"id":5,"deviceId":2,"name":"תריס חדר שינה","type":6,"icon":"device_5.png","order":0}]
+[{"id":5,"deviceId":2,"name":"תריס חדר שינה","type":6,"icon":"device_5.png","order":0},{"id":12,"deviceId":1,"name":"מזגן חדר אורחים","type":5,"icon":"device_12.png","order":0}]
