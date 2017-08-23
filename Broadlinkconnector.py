@@ -15,6 +15,7 @@ class Broadlinkconnector:
         if Broadlinkconnector.__instance is not None:
             return
         devices = {}
+        remotes = {}
         gotActictiveConnections = False
         Broadlinkconnector.__instance = self
         self.init('config.yaml')
@@ -37,6 +38,7 @@ class Broadlinkconnector:
             config = yaml.load(stream)
         devices={}
         gotActictiveConnections=False
+        self.remotes = config['remotes']
 
         for dev in config['devices'].keys():
             name = dev
@@ -46,7 +48,6 @@ class Broadlinkconnector:
             mac = bytearray.fromhex("b4430fffffff")#dev.get('mac',None)
             devices[name]['link'] = broadlink.rm(host=(ip, 80), mac=mac)
             logger.info("Connecting to Broadlink: device {} on ip {}".format(name,ip))
-            devices[name]['remotes']=config['devices'][name]['remotes']
             try:
                 devices[name]['link'].auth()
             except socket.timeout:
@@ -65,26 +66,28 @@ class Broadlinkconnector:
         self.gotActictiveConnections = gotActictiveConnections
         self.urls = config.get('urls',None)
 
-    def execute(self, device, remote, operation):
+
+    def execute(self, remote, operation):
         logger=logging.getLogger(__name__)
-        dev = self.devices.get(device,None)
-        if dev is None:
-            logger.error("device {} does not exist".format(device))
-            return
-        rem = dev['remotes'].get(remote,None)
+
+        rem = self.remotes.get(remote,None)
         if rem is None:
-            logger.error("remote {} does not exist in device {}".format(remote, device))
+            logger.error("remote {} does not exist".format(remote))
             return
+
+        devName=rem.get('device',None)
+        device=self.devices[devName]
         op_hex = rem['oplist'].get(operation,None)
+
         if op_hex is None:
-            logger.error("operation {} does not exist in remote {} in device {}".format(operation, remote, device))
+            logger.error("operation {} does not exist in remote {} in device {}".format(operation, remote, devName))
             return
 
-        if not dev['isConnected']:
-            logger.error("Cant execute command, device {} is not connected".format(device))
+        if not device['isConnected']:
+            logger.error("Cant execute command, device {} is not connected".format(devName))
             return
 
-        dev['link'].send_data(op_hex.decode('hex'))
+        device['link'].send_data(op_hex.decode('hex'))
         logger.info("Command {} executes successfully".format(operation))
 
     def gotactictiveconnections(self):
